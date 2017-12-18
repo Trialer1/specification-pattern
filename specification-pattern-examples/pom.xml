@@ -11,6 +11,10 @@
   <dependencies>
       <dependency>
           <groupId>de.boettcher</groupId>
+          <artifactId>specification-pattern-api</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>de.boettcher</groupId>
           <artifactId>specification-pattern-impl</artifactId>
       </dependency>
       <dependency>

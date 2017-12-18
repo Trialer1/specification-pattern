@@ -32,8 +32,13 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
     }
 
     private BasicCompositeSpecification(final Collection<Specification<T>> andSpecifications, final Collection<Specification<T>> orSpecifications) {
-        this.andSpecifications.addAll(andSpecifications);
-        this.orSpecifications.addAll(orSpecifications);
+        if (CollectionUtils.isNotEmpty(andSpecifications)) {
+            this.andSpecifications.addAll(andSpecifications);
+        }
+
+        if (CollectionUtils.isNotEmpty(orSpecifications)) {
+            this.orSpecifications.addAll(orSpecifications);
+        }
     }
 
     @Override
