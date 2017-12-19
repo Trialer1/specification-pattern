@@ -1,5 +1,7 @@
 package de.boettcher.specification.api;
 
+import java.util.Optional;
+
 /**
  * Composite specification based on Martin Fowler (https://martinfowler.com/apsupp/spec.pdf).
  * @param <T> Type of the object which can be checked against the specification.
@@ -23,8 +25,8 @@ public interface CompositeSpecification<T> extends Specification<T> {
     /**
      * Checks the specified object for {@link Specification}s which are not met and creates a new {@link CompositeSpecification} out of them.
      * @param t Object to check for satisfaction
-     * @return New {@link CompositeSpecification} containing all {@link Specification}s which are not met
+     * @return Optional new {@link CompositeSpecification} containing all {@link Specification}s which are not met
      */
-    public CompositeSpecification<T> remainderUnsatisfiedBy(T t);
+    public Optional<CompositeSpecification<T>> remainderUnsatisfiedBy(T t);
 
 }

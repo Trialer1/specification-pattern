@@ -2,6 +2,8 @@ package de.boettcher.specification.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import de.boettcher.specification.api.CompositeSpecification;
@@ -19,8 +21,8 @@ public class BasicCompositeSpecificationTest {
     @Test
     public void testIsSatisfiedBy_TrueBecauseInitialAndAndClauseIsTrueToo() throws Exception {
         final BasicCompositeSpecification<Object> basicCompositeSpecification = new BasicCompositeSpecification<>(t -> true);
-        basicCompositeSpecification.and(t -> true);
-        final boolean satisfiedBy = basicCompositeSpecification.isSatisfiedBy("");
+        final CompositeSpecification<Object> compositeSpecification = basicCompositeSpecification.and(t -> true);
+        final boolean satisfiedBy = compositeSpecification.isSatisfiedBy("");
 
         assertThat(satisfiedBy).isTrue();
     }
@@ -28,8 +30,8 @@ public class BasicCompositeSpecificationTest {
     @Test
     public void testIsSatisfiedBy_TrueBecauseInitialAndOrClauseIsTrueToo() throws Exception {
         final BasicCompositeSpecification<Object> basicCompositeSpecification = new BasicCompositeSpecification<>(t -> true);
-        basicCompositeSpecification.or(t -> true);
-        final boolean satisfiedBy = basicCompositeSpecification.isSatisfiedBy("");
+        final CompositeSpecification<Object> compositeSpecification = basicCompositeSpecification.or(t -> true);
+        final boolean satisfiedBy = compositeSpecification.isSatisfiedBy("");
 
         assertThat(satisfiedBy).isTrue();
     }
@@ -37,10 +39,19 @@ public class BasicCompositeSpecificationTest {
     @Test
     public void testIsSatisfiedBy_TrueBecauseInitialIsTrueAndOrClauseIsFalse() throws Exception {
         final BasicCompositeSpecification<Object> basicCompositeSpecification = new BasicCompositeSpecification<>(t -> true);
-        basicCompositeSpecification.or(t -> false);
-        final boolean satisfiedBy = basicCompositeSpecification.isSatisfiedBy("");
+        final CompositeSpecification<Object> compositeSpecification = basicCompositeSpecification.or(t -> false);
+        final boolean satisfiedBy = compositeSpecification.isSatisfiedBy("");
 
         assertThat(satisfiedBy).isTrue();
+    }
+
+    @Test
+    public void testIsSatisfiedBy_FalseBecauseInitialIsTrueAndAndClauseIsFalse() throws Exception {
+        final BasicCompositeSpecification<Object> basicCompositeSpecification = new BasicCompositeSpecification<>(t -> true);
+        final CompositeSpecification<Object> compositeSpecification = basicCompositeSpecification.and(t -> false);
+        final boolean satisfiedBy = compositeSpecification.isSatisfiedBy("");
+
+        assertThat(satisfiedBy).isFalse();
     }
 
     @Test
@@ -82,6 +93,18 @@ public class BasicCompositeSpecificationTest {
         assertThat(compositeSpecification.getAndSpecifications()).contains(specification2);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testAnd_2SpecifcationsInOr() throws Exception {
+        final BasicCompositeSpecification<String> specification1 = new BasicCompositeSpecification<>(t -> true);
+        final BasicCompositeSpecification<String> specification2 = new BasicCompositeSpecification<>(t -> true);
+
+        final BasicCompositeSpecification<String> compositeSpecification = (BasicCompositeSpecification<String>) specification1.or(specification2);
+
+        assertThat(compositeSpecification.getOrSpecifications()).contains(specification1);
+        assertThat(compositeSpecification.getOrSpecifications()).contains(specification2);
+    }
+
     @Test
     public void testOr_CompositeSpecification() throws Exception {
         final BasicCompositeSpecification<String> specification1 = new BasicCompositeSpecification<>(t -> true);
@@ -102,6 +125,22 @@ public class BasicCompositeSpecificationTest {
 
         assertThat(compositeSpecification.getOrSpecifications()).contains(specification1);
         assertThat(compositeSpecification.getOrSpecifications()).contains(specification2);
+    }
+
+    @Test
+    public void testRemainderUnsatisfiedBy_NotPresent() throws Exception {
+        final BasicCompositeSpecification<String> specification1 = new BasicCompositeSpecification<>(t -> true);
+        final Optional<CompositeSpecification<String>> optionalRemainderUnsatisfiedBy = specification1.remainderUnsatisfiedBy("");
+
+        assertThat(optionalRemainderUnsatisfiedBy).isNotPresent();
+    }
+
+    @Test
+    public void testRemainderUnsatisfiedBy_Present() throws Exception {
+        final BasicCompositeSpecification<String> specification1 = new BasicCompositeSpecification<>(t -> false);
+        final Optional<CompositeSpecification<String>> optionalRemainderUnsatisfiedBy = specification1.remainderUnsatisfiedBy("");
+
+        assertThat(optionalRemainderUnsatisfiedBy).isPresent();
     }
 
 }

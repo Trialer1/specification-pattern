@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -44,7 +45,7 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
     @Override
     public boolean isSatisfiedBy(final T t) {
         final boolean areAllAndSpecificationsSatisfied = this.areAndSpecificationsSatisfied(t);
-        final boolean atLeastOneOrSpecificationsSatisfied = this.areOreSpecificationsSatisfied(t);
+        final boolean atLeastOneOrSpecificationsSatisfied = this.areOrSpecificationsSatisfied(t);
 
         final boolean satisfiedBy = areAllAndSpecificationsSatisfied && atLeastOneOrSpecificationsSatisfied;
 
@@ -67,13 +68,17 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     // TODO Check if this is really useful
     @Override
-    public CompositeSpecification<T> remainderUnsatisfiedBy(final T t) {
+    public Optional<CompositeSpecification<T>> remainderUnsatisfiedBy(final T t) {
         final Collection<Specification<T>> unsatisfiedAndSpecifications = this.getUnsatisfiedSpecifications(t, this.andSpecifications);
         final Collection<Specification<T>> unsatisfiedOrSpecifications = this.getUnsatisfiedSpecifications(t, this.orSpecifications);
 
+        if (CollectionUtils.isEmpty(unsatisfiedAndSpecifications) && CollectionUtils.isEmpty(unsatisfiedOrSpecifications)) {
+            return Optional.empty();
+        }
+
         final CompositeSpecification<T> unsatisfiedSpecification = new BasicCompositeSpecification<>(unsatisfiedAndSpecifications, unsatisfiedOrSpecifications);
 
-        return unsatisfiedSpecification;
+        return Optional.of(unsatisfiedSpecification);
     }
 
     private Collection<Specification<T>> getUnsatisfiedSpecifications(final T t, final Collection<Specification<T>> specifications) {
@@ -94,7 +99,7 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
     }
 
     private boolean areAndSpecificationsSatisfied(final T t) {
-        if (this.andSpecifications == null || this.andSpecifications.size() < 1) {
+        if (CollectionUtils.isEmpty(this.andSpecifications)) {
             return true;
         }
 
@@ -109,8 +114,8 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
         return true;
     }
 
-    private boolean areOreSpecificationsSatisfied(final T t) {
-        if (this.orSpecifications == null || this.orSpecifications.size() < 1) {
+    private boolean areOrSpecificationsSatisfied(final T t) {
+        if (CollectionUtils.isEmpty(this.orSpecifications)) {
             return true;
         }
 
