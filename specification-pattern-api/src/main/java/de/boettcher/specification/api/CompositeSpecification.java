@@ -23,6 +23,19 @@ public interface CompositeSpecification<T> extends Specification<T> {
     public CompositeSpecification<T> or(Specification<T> specification);
 
     /**
+     * Creates a new {@link CompositeSpecification} based on the current specification and the negated specified one.
+     * @param specification Specification to negate add by using "AND". Must not be null.
+     * @return New {@link CompositeSpecification} containing 2 {@link Specification}s combined by "AND"
+     */
+    public CompositeSpecification<T> not(Specification<T> specification);
+
+    /**
+     * Creates a new {@link CompositeSpecification} based on a negated version the current specification.
+     * @return New {@link CompositeSpecification} which is a negated version of the current one.
+     */
+    public CompositeSpecification<T> not();
+
+    /**
      * Checks the specified object for {@link Specification}s which are not met and creates a new {@link CompositeSpecification} out of them.
      * @param t Object to check for satisfaction
      * @return Optional new {@link CompositeSpecification} containing all {@link Specification}s which are not met

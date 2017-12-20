@@ -66,7 +66,21 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
         return abstractCompositeSpecification;
     }
 
-    // TODO Check if this is really useful
+    @Override
+    public CompositeSpecification<T> not(final Specification<T> specification) {
+        final NotSpecification<T> notSpecification = new NotSpecification<>(specification);
+        final CompositeSpecification<T> compositeSpecification = this.and(notSpecification);
+
+        return compositeSpecification;
+    }
+
+    @Override
+    public CompositeSpecification<T> not() {
+        final NotSpecification<T> notSpecification = new NotSpecification<>(this);
+
+        return notSpecification;
+    }
+
     @Override
     public Optional<CompositeSpecification<T>> remainderUnsatisfiedBy(final T t) {
         final Collection<Specification<T>> unsatisfiedAndSpecifications = this.getUnsatisfiedSpecifications(t, this.andSpecifications);
@@ -148,4 +162,5 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
         builder.append("]");
         return builder.toString();
     }
+
 }
