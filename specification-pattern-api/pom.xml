@@ -7,5 +7,5 @@
   </parent>
   <artifactId>specification-pattern-api</artifactId>
   <name>Specification Pattern API</name>
-  <description>TODO</description>
+  <description>Simple Specification Pattern API based on the Specification pattern introduced by Martin Fowler (https://martinfowler.com/apsupp/spec.pdf)</description>
 </project>

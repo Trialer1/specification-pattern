@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,9 +22,9 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     private final Collection<Specification<T>> orSpecifications = new ArrayList<>();
 
-    // TODO Parameter null checks
-
     protected BasicCompositeSpecification(final Specification<T> specification) {
+        Objects.requireNonNull(specification);
+
         this.andSpecifications.add(specification);
     }
 
@@ -44,6 +45,8 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     @Override
     public boolean isSatisfiedBy(final T t) {
+        Objects.requireNonNull(t);
+
         final boolean areAllAndSpecificationsSatisfied = this.areAndSpecificationsSatisfied(t);
         final boolean atLeastOneOrSpecificationsSatisfied = this.areOrSpecificationsSatisfied(t);
 
@@ -54,6 +57,8 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     @Override
     public CompositeSpecification<T> and(final Specification<T> specification) {
+        Objects.requireNonNull(specification);
+
         final BasicCompositeSpecification<T> abstractCompositeSpecification = new BasicCompositeSpecification<>(this, specification);
 
         return abstractCompositeSpecification;
@@ -61,6 +66,8 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     @Override
     public CompositeSpecification<T> or(final Specification<T> specification) {
+        Objects.requireNonNull(specification);
+
         final BasicCompositeSpecification<T> abstractCompositeSpecification = new BasicCompositeSpecification<>(null, Arrays.asList(this, specification));
 
         return abstractCompositeSpecification;
@@ -68,6 +75,8 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     @Override
     public CompositeSpecification<T> not(final Specification<T> specification) {
+        Objects.requireNonNull(specification);
+
         final NotSpecification<T> notSpecification = new NotSpecification<>(specification);
         final CompositeSpecification<T> compositeSpecification = this.and(notSpecification);
 
@@ -83,6 +92,8 @@ public class BasicCompositeSpecification<T> implements CompositeSpecification<T>
 
     @Override
     public Optional<CompositeSpecification<T>> remainderUnsatisfiedBy(final T t) {
+        Objects.requireNonNull(t);
+
         final Collection<Specification<T>> unsatisfiedAndSpecifications = this.getUnsatisfiedSpecifications(t, this.andSpecifications);
         final Collection<Specification<T>> unsatisfiedOrSpecifications = this.getUnsatisfiedSpecifications(t, this.orSpecifications);
 

@@ -7,7 +7,7 @@
   </parent>
   <artifactId>specification-pattern-examples</artifactId>
   <name>Specification Pattern Examples</name>
-  <description>TODO</description>
+  <description>Some examples of the usage of the Specification Pattern API.</description>
   <dependencies>
       <dependency>
           <groupId>de.boettcher</groupId>
